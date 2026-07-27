@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fale com a gente no WhatsApp</title>
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1367542435470120');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1367542435470120&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+<style>
+  :root {
+    --wa-green: #25D366;
+    --wa-green-dark: #1ebe5b;
+    --bg: #0b141a;
+    --card-bg: #111b21;
+    --text: #e9edef;
+    --muted: #8696a0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    max-width: 420px;
+    width: 100%;
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,.4);
+  }
+  .icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    background: var(--wa-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon svg { width: 38px; height: 38px; fill: #fff; }
+  .spinner {
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255,255,255,.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .msg {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .btn {
+    display: block;
+    width: 100%;
+    background: var(--wa-green);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s ease, transform .1s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:hover { background: var(--wa-green-dark); }
+  .btn.loading { opacity: .7; pointer-events: none; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="icon" style="margin-bottom: 28px;">
+    <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm5.8 14.11c-.24.68-1.4 1.32-1.93 1.36-.52.05-1 .24-3.42-.74-2.9-1.18-4.75-4.12-4.9-4.31-.14-.19-1.17-1.56-1.17-2.98s.73-2.12.99-2.41c.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.42-.07.65.5.24.58.81 2 .88 2.15.07.14.12.31.02.5-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.12.57.17.29.75 1.24 1.61 2.01 1.11 1 2.05 1.31 2.33 1.46.29.14.46.12.63-.07.17-.19.71-.83.9-1.12.19-.29.38-.24.64-.14.26.1 1.66.78 1.94.93.29.14.48.21.55.33.07.12.07.69-.17 1.37z"/></svg>
+  </div>
+
+  <div id="statusMsg" class="msg">
+    <span class="spinner"></span>Estamos te redirecionando...
+  </div>
+
+  <a href="#" id="waBtn" class="btn" style="display:none; margin-top: 20px;">Chamar no WhatsApp</a>
+</div>
+
+<script>
+  // ===== Números para rotação (ordem sequencial) =====
+  const numeros = [
+    "5519988887907",
+    "573108408649",
+    "573003234066"
+  ];
+
+  // Mensagem padrão que abre já preenchida no WhatsApp (opcional - pode deixar "")
+  const mensagem = "";
+
+  // ===== Rotação em ordem sequencial =====
+  // Usa localStorage para saber qual foi o último número usado NESTE navegador
+  // e usa timestamp para distribuir de forma sequencial e uniforme entre visitantes
+  // (sem precisar de servidor/banco de dados).
+  function getNumeroRotacionado() {
+    const chave = "wa_rotation_index";
+    let index = parseInt(localStorage.getItem(chave));
+
+    if (isNaN(index)) {
+      // Primeira visita neste navegador: usa o segundo atual para
+      // decidir o ponto de partida, garantindo distribuição uniforme
+      // entre diferentes visitantes que chegam ao mesmo tempo.
+      index = Math.floor(Date.now() / 1000) % numeros.length;
+    } else {
+      index = (index + 1) % numeros.length;
+    }
+
+    localStorage.setItem(chave, index);
+    return numeros[index];
+  }
+
+  const btn = document.getElementById("waBtn");
+  const statusMsg = document.getElementById("statusMsg");
+  const numeroEscolhido = getNumeroRotacionado();
+  const linkWhatsapp = "https://api.whatsapp.com/send?phone=" + numeroEscolhido +
+    (mensagem ? "&text=" + encodeURIComponent(mensagem) : "");
+
+  btn.setAttribute("href", linkWhatsapp);
+
+  // Dispara o evento Contact assim que a página carrega
+  if (typeof fbq === "function") {
+    fbq("track", "Contact");
+  }
+
+  // Redireciona automaticamente após um pequeno delay (dá tempo do pixel disparar
+  // e mostra a mensagem "Estamos te redirecionando..." pro usuário)
+  setTimeout(function () {
+    window.location.href = linkWhatsapp;
+  }, 1800);
+
+  // Fallback: se o navegador bloquear o redirect automático (ex: alguns navegadores
+  // mobile), mostra o botão pra clicar manualmente
+  setTimeout(function () {
+    statusMsg.style.display = "none";
+    btn.style.display = "block";
+  }, 3500);
+
+  btn.addEventListener("click", function(e) {
+    e.preventDefault();
+    window.location.href = linkWhatsapp;
+  });
+</script>
+
+</body>
+</html>
