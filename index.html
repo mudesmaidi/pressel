@@ -113,45 +113,27 @@ src="https://www.facebook.com/tr?id=1367542435470120&ev=PageView&noscript=1"
 </div>
 
 <script>
-  // ===== Números para rotação (ordem sequencial) =====
+  // ===== Números para sorteio aleatório =====
   const numeros = [
     "573002557890",
     "573108408649",
     "573003234066",
-  "573503305549",
+    "573503305549",
     "573241451523",
     "573108457327",
     "573003314830",
     "573003391778",
     "573163691280",
     "573167752422",
-    "573224115496",
-
-    
-    
+    "573224115496"
   ];
 
   // Mensagem padrão que abre já preenchida no WhatsApp (opcional - pode deixar "")
   const mensagem = "";
 
-  // ===== Rotação em ordem sequencial =====
-  // Usa localStorage para saber qual foi o último número usado NESTE navegador
-  // e usa timestamp para distribuir de forma sequencial e uniforme entre visitantes
-  // (sem precisar de servidor/banco de dados).
+  // ===== Seleção aleatória =====
   function getNumeroRotacionado() {
-    const chave = "wa_rotation_index";
-    let index = parseInt(localStorage.getItem(chave));
-
-    if (isNaN(index)) {
-      // Primeira visita neste navegador: usa o segundo atual para
-      // decidir o ponto de partida, garantindo distribuição uniforme
-      // entre diferentes visitantes que chegam ao mesmo tempo.
-      index = Math.floor(Date.now() / 1000) % numeros.length;
-    } else {
-      index = (index + 1) % numeros.length;
-    }
-
-    localStorage.setItem(chave, index);
+    const index = Math.floor(Math.random() * numeros.length);
     return numeros[index];
   }
 
